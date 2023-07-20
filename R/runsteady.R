@@ -384,14 +384,15 @@ runsteady <- function(y, time=c(0,Inf), func, parms, stol=1e-8,
 ### calling solver
   storage.mode(y) <- storage.mode(times) <- "double"
     
-  out <- .Call("call_lsode",y,times,Func,as.double(initpar), as.double(Forc),
-               as.double(stol),rtol, atol, rho, tcrit, JacFunc, ModelInit, 
+  #' Don't parse initpar as double, if compiled model is used
+  #' - this allows passing of any R (SEXP) object, e.g. a list to compiled model code, as in deSolve
+  out <- .Call("call_lsode", y, times, Func,{if(is.null(dllname) || !is.character(dllname)) as.double(initpar) else initpar},
+               as.double(Forc), as.double(stol),rtol, atol, rho, tcrit, JacFunc, ModelInit, 
                ModelForc, as.integer(verbose), as.integer(itask), as.double(rwork),
                as.integer(iwork), as.integer(imp),as.integer(Nglobal),
                as.integer(lrw),as.integer(liw),as.integer(nspec), as.integer(ndim),
                as.double (rpar), as.integer(ipar),as.integer(Type),
                PACKAGE="rootSolve")
-
 
 ### saving results    
   istate <- attr(out, "istate")

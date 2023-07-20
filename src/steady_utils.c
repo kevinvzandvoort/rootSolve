@@ -56,6 +56,10 @@ void Initstparms(int *N, double *parms)
       for (i = 0; i < *N; i++) parms[i] = REAL(st_gparms)[i];
     }
 }
+
+SEXP get_rootSolve_gparms(void) {
+  return st_gparms;
+}
   
 /* same for forcing functions */
 

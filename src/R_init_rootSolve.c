@@ -33,6 +33,9 @@ extern SEXP call_lsode(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEX
                        SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, 
                        SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
+/* C callable functions ---------------------------------------------------- */
+SEXP get_rootSolve_gparms(void);
+
 static const R_CallMethodDef CallEntries[] = {
     {"call_dsteady",    (DL_FUNC) &call_dsteady,    26},
     {"call_stsparse",   (DL_FUNC) &call_stsparse,   27},
@@ -47,4 +50,10 @@ void R_init_rootSolve(DllInfo *dll) {
   
   // the following two lines protect against accidentially finding entry points
   R_useDynamicSymbols(dll, FALSE); // disable dynamic searching
+
+  /*
+    Register C callable to support any SEXP parameters in compiled functions
+    - similar to deSolve
+  */
+  R_RegisterCCallable("rootSolve", "get_rootSolve_gparms", (DL_FUNC) get_rootSolve_gparms);
 }  
